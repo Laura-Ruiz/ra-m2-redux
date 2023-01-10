@@ -14,8 +14,8 @@ const initialState = {
 export const getHouses = createAsyncThunk(
   'houses/getHouses',
   async (currentPage) => {
-  const itemsPerPage = 9 * currentPage
-  const url = `${urls.houses}?_start=${currentPage}&_end=${itemsPerPage}`
+  const itemsPerPage = 9
+  const url = `${urls.houses}?page=${currentPage}&_limit=${itemsPerPage*currentPage}`
   const response = await fetch(url,
   { method: 'GET',
     mode: 'cors',
