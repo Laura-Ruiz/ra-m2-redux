@@ -16,7 +16,11 @@ export const getHouses = createAsyncThunk(
   async (currentPage) => {
   const itemsPerPage = 9
   const url = `${urls.houses}?page=${currentPage}&_limit=${itemsPerPage*currentPage}`
-  const response = await fetch(url)
+  const response = await fetch(url,
+  { method: 'GET',
+    mode: 'cors',
+    cache: 'default'
+ })
   const data = await response.json()
    return data
 } 
