@@ -1,5 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { useSelector } from "react-redux"
 import { colors, Container, dimensions, FlexBox } from '../../styles'
 import { Button, Icon } from '../atoms'
 import { SelectGroup } from '../molecules'
@@ -26,7 +28,16 @@ const FormStyled = styled(FlexBox).attrs({ as: 'form' })`
   }
 `
 
-function SubHeader({ ...props }) {
+
+function SubHeader({onChange, ...props}) {
+
+ const houses = useSelector((state)=> state.houses.houses)
+ const {byTypes, byCities} = houses
+
+
+const valuesByTypes = Object.entries(byTypes).map(item => ({value:item[0], text:item[0]}))
+const valuesByCities = Object.entries(byCities).map(item => ({value:item[0], text:item[0]}))
+
   return (
     <SubHeaderStyled {...props}>
       <Container>
@@ -36,11 +47,8 @@ function SubHeader({ ...props }) {
             label="Tipo"
             defaultText="Piso, chalet o garaje..."
             hideLabel
-            options={[
-              { value: 'piso', text: 'Piso' },
-              { value: 'garaje', text: 'Garaje' },
-              { value: 'chalets', text: 'Chalets' },
-            ]}
+            options= {valuesByTypes}
+            onChange = {onChange}
           />
 
           <SelectGroup
@@ -48,11 +56,8 @@ function SubHeader({ ...props }) {
             label="Ciudad"
             defaultText="Madrid, Barcelona o Zaragoza..."
             hideLabel
-            options={[
-              { value: 'barcelona', text: 'Barcelona' },
-              { value: 'madrid', text: 'Madrid' },
-              { value: 'zaragoza', text: 'Zaragoza' },
-            ]}
+            options= {valuesByCities}
+            onChange = {onChange}
           />
 
           <Button>
@@ -64,4 +69,7 @@ function SubHeader({ ...props }) {
   )
 }
 
+SubHeader.propTypes = {
+  onChange: PropTypes.func
+}
 export default styled(SubHeader)``

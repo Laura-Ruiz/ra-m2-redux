@@ -1,45 +1,64 @@
 import React, { useEffect, useState } from 'react'
+import PropTypes from 'prop-types'
 import styled from 'styled-components'
+import { useSelector, useDispatch } from 'react-redux'
+import { getHouses } from '../../store/houses.slice'
 import { Button } from '../atoms'
 import { HouseCard } from '../molecules'
-import { useFetch } from '../../hooks'
 import { FlexBox, Grid } from '../../styles'
-import { urls } from '../../constants'
 
 const HousesStyled = styled(FlexBox)``
 
-function Houses() {
-  const [houses, setHouses] = useState([])
-  const [currentPage, setCurrentPage] = useState(1)
-  const { data, loading, isError, isSuccess } = useFetch(urls.houses)
+function Houses({ selectedValue }) {
+  const { type, ciudad } = selectedValue
+
+  const houses = useSelector((state) => state.houses.houses)
+  const { allIds, byId, byCities, byTypes } = houses
+  const reqStatus = useSelector((state) => state.houses.reqStatus)
+
+  const [page, setPage] = useState(1)
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    if (!data) return
-    setHouses(data)
-  }, [data])
+    dispatch(getHouses(page))
+  }, [dispatch, page])
+
+  const [selected, setSelected] = useState()
+
+  useEffect(() => {
+    if (type === null && ciudad !== null) {
+      setSelected(byCities[ciudad])
+    } else if (type !== null && ciudad === null) {
+      setSelected(byTypes[type])
+    } else if (type !== null && ciudad !== null) {
+      const result = byTypes[type].filter(element => byCities[ciudad].includes(element));
+      setSelected(result)
+    } else {
+      setSelected(allIds)
+    }
+  }, [allIds, byCities, byTypes, ciudad, type])
 
   return (
     <HousesStyled>
-      {loading && <div>Loading...</div>}
-      {isError && <div>Error</div>}
-      {isSuccess && (
+      {reqStatus === 'loading' && <div>Loading...</div>}
+      {reqStatus === 'failed' && <div>Error</div>}
+      {reqStatus === 'success' && (
         <Grid gridGap="32px">
-          {houses.map((house) => (
-            <HouseCard
-              key={house.id}
-              title={house.title}
-              price={`${house.price}€`}
-              img={house.image}
-              link=""
-            />
-          ))}
+          {selected &&
+            selected.map((id) => (
+              <HouseCard
+                key={id}
+                title={byId[id].title}
+                price={`${byId[id].price}€`}
+                img={byId[id].image}
+                link=""
+              />
+            ))}
         </Grid>
       )}
       <FlexBox align="center">
-        <Button
-          style={{ marginTop: '2rem' }}
-          onClick={() => setCurrentPage(currentPage + 1)}
-        >
+        <Button style={{ marginTop: '2rem' }} onClick={() => setPage(page + 1)}>
           Load more
         </Button>
       </FlexBox>
@@ -47,4 +66,9 @@ function Houses() {
   )
 }
 
+Houses.propTypes = {
+  // eslint-disable-next-line react/forbid-prop-types
+  selectedValue: PropTypes.object,
+  ciudad: PropTypes.string,
+}
 export default styled(Houses)``

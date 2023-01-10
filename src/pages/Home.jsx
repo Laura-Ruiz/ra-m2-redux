@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import styled from 'styled-components'
 import { Body } from '../components/layout'
 import { Houses } from '../components/organisms'
@@ -15,12 +15,25 @@ const MapPlaceholder = styled(FlexBox)`
   margin-left: ${dimensions.spacing.xxl};
 `
 
+
 function Home() {
+  const [selectedValue, setSelectedValue] = useState({
+    type: null, 
+    ciudad: null
+  })
+
+const handleChange = ({ target: { name, value } }) => {
+  setSelectedValue(prevFormData => ({
+        ...prevFormData,
+        [name]:value
+    }))
+
+}
   return (
-    <Body>
+    <Body onChange={handleChange} selectedValue={selectedValue}>
       <HomeStyled>
         <FlexBox direction="row">
-          <Houses />
+          <Houses selectedValue = {selectedValue} />
           <MapPlaceholder grow="1" shrink="0" justify="center" align="center">
             Mapa
           </MapPlaceholder>
