@@ -14,13 +14,12 @@ const initialState = {
 export const getHouses = createAsyncThunk(
   'houses/getHouses',
   async (currentPage) => {
-  const limit = 9*currentPage
+  const limit = 9 * currentPage
   const url = `${urls.houses}?page=${currentPage}&_limit=${limit}`
   const response = await fetch(url)
   const data = await response.json()
    return data
-} 
-)
+})
 
 const housesSlice = createSlice({
   name: 'houses',
