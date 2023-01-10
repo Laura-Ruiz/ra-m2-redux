@@ -13,9 +13,9 @@ const initialState = {
 
 export const getHouses = createAsyncThunk(
   'houses/getHouses',
-  async (currentPage) => {
-  const url = `${urls.houses}?page=${currentPage}&_limit=${9*currentPage}`
-  const response = await fetch(url)
+  async () => {
+  // const url = `${urls.houses}?page=${currentPage}&_limit=${9*currentPage}`
+  const response = await fetch(urls.houses)
   const data = await response.json()
    return data
 } 
