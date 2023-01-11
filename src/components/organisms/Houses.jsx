@@ -10,6 +10,8 @@ import { FlexBox, Grid } from '../../styles'
 const HousesStyled = styled(FlexBox)``
 
 function Houses({ selectedValue }) {
+  // El selected value debería de venir de Redux, así evitas pasar props entre componentes.
+  // Es una de las principales ventajas que tiene.
   const { type, ciudad } = selectedValue
 
   const houses = useSelector((state) => state.houses.houses)
@@ -27,12 +29,18 @@ function Houses({ selectedValue }) {
   const [selected, setSelected] = useState()
 
   useEffect(() => {
+    // Este bloque me parece muy díficil de seguir y leer.
+    // No escala bien si aumenta la cantidad de filtros
+    // Refactoriza subiendo más lógica a redux
     if (type === null && ciudad !== null) {
       setSelected(byCities[ciudad])
     } else if (type !== null && ciudad === null) {
       setSelected(byTypes[type])
     } else if (type !== null && ciudad !== null) {
-      const result = byTypes[type].filter(element => byCities[ciudad].includes(element));
+      // Especialmente aquí, si tienes 5 filtros se pierde el hilo.
+      const result = byTypes[type].filter((element) =>
+        byCities[ciudad].includes(element),
+      )
       setSelected(result)
     } else {
       setSelected(allIds)
@@ -46,6 +54,7 @@ function Houses({ selectedValue }) {
       {reqStatus === 'success' && (
         <Grid gridGap="32px">
           {selected &&
+            // Antes del map, filtra en función de los valores seleccionados
             selected.map((id) => (
               <HouseCard
                 key={id}
