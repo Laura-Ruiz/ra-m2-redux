@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
-import { useSelector } from "react-redux"
+import { updateType, updateCity } from '../../store/selectOption.slice'
 import { colors, Container, dimensions, FlexBox } from '../../styles'
 import { Button, Icon } from '../atoms'
 import { SelectGroup } from '../molecules'
+
 
 const SubHeaderStyled = styled(FlexBox)`
   padding-top: ${dimensions.spacing.xl};
@@ -28,15 +30,32 @@ const FormStyled = styled(FlexBox).attrs({ as: 'form' })`
   }
 `
 
+function SubHeader({ onChange, ...props }) {
 
-function SubHeader({onChange, ...props}) {
+  const selected = useSelector((state) => state.select)
 
- const houses = useSelector((state)=> state.houses.houses)
- const {byTypes, byCities} = houses
+  const dispatch = useDispatch()
+
+  const [selectedValue, setSelectedValue] = useState({...selected})
 
 
-const valuesByTypes = Object.entries(byTypes).map(item => ({value:item[0], text:item[0]}))
-const valuesByCities = Object.entries(byCities).map(item => ({value:item[0], text:item[0]}))
+  useEffect(() => {
+    dispatch(updateCity(selectedValue.city))
+    dispatch(updateType(selectedValue.type))
+  }, [dispatch, selectedValue])
+  
+
+  const houses = useSelector((state) => state.houses.houses)
+  const { byTypes, byCities } = houses
+
+  const valuesByTypes = Object.entries(byTypes).map((item) => ({
+    value: item[0],
+    text: item[0],
+  }))
+  const valuesByCities = Object.entries(byCities).map((item) => ({
+    value: item[0],
+    text: item[0],
+  }))
 
   return (
     <SubHeaderStyled {...props}>
@@ -47,18 +66,18 @@ const valuesByCities = Object.entries(byCities).map(item => ({value:item[0], tex
             label="Tipo"
             defaultText="Piso, chalet o garaje..."
             hideLabel
-            options= {valuesByTypes}
-            onChange = {onChange}
-          />
+            options={valuesByTypes}
+            onChange={(e)=> setSelectedValue({...selectedValue, type: e.target.value})}
+            />
 
           <SelectGroup
-            id="ciudad"
+            id="city"
             label="Ciudad"
             defaultText="Madrid, Barcelona o Zaragoza..."
             hideLabel
-            options= {valuesByCities}
-            onChange = {onChange}
-          />
+            options={valuesByCities}
+            onChange={(e)=> setSelectedValue({...selectedValue, city: e.target.value})}
+            />
 
           <Button>
             <Icon icon="search" />
@@ -70,6 +89,6 @@ const valuesByCities = Object.entries(byCities).map(item => ({value:item[0], tex
 }
 
 SubHeader.propTypes = {
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
 }
 export default styled(SubHeader)``
