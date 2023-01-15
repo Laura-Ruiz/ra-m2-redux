@@ -14,8 +14,18 @@ const initialState = {
     byId: {},
     allIds: [],
     byCities: {},
-    byTypes: {},
-  }
+    byTypes: {}, 
+  },
+
+ pagination: {
+   currentPage: 1,
+  itemsPerPage: 9,
+ },
+  
+ selectOption: {
+    type: '',
+  city: ''
+}
 }
 
 export const getHouses = createAsyncThunk(
@@ -36,7 +46,17 @@ export const getHouses = createAsyncThunk(
 const housesSlice = createSlice({
   name: 'houses',
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentPage: (state, action) => {
+      state.pagination.currentPage = action.payload;
+    },
+    updateType(state, action) {
+      state.selectOption.type = action.payload
+    },
+    updateCity(state, action) {
+      state.selectOption.city = action.payload
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(getHouses.pending, (state) => {
       state.reqStatus = 'loading'
@@ -81,5 +101,7 @@ const housesSlice = createSlice({
     })
   },
 })
+
+export const { setCurrentPage, updateType, updateCity  } = housesSlice.actions;
 
 export default housesSlice.reducer

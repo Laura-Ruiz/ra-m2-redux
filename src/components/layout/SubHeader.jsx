@@ -2,11 +2,10 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { useSelector, useDispatch } from 'react-redux'
 import styled from 'styled-components'
-import { updateType, updateCity } from '../../store/selectOption.slice'
 import { colors, Container, dimensions, FlexBox } from '../../styles'
 import { Button, Icon } from '../atoms'
 import { SelectGroup } from '../molecules'
-
+import { updateType, updateCity } from '../../store/houses.slice'
 
 const SubHeaderStyled = styled(FlexBox)`
   padding-top: ${dimensions.spacing.xl};
@@ -32,7 +31,7 @@ const FormStyled = styled(FlexBox).attrs({ as: 'form' })`
 
 function SubHeader({ onChange, ...props }) {
 
-  const selected = useSelector((state) => state.select)
+  const selected = useSelector((state) => state.houses.selectOption)
 
   const dispatch = useDispatch()
 

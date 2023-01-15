@@ -1,25 +1,23 @@
 import React, { useEffect} from 'react'
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
-import { getHouses } from '../../store/houses.slice'
+import { getHouses, setCurrentPage } from '../../store/houses.slice'
 import { Button } from '../atoms'
 import { HouseCard } from '../molecules'
 import { FlexBox, Grid } from '../../styles'
-import { setCurrentPage } from '../../store/pagination.slice'
+import { filterByType, filterByCity } from '../../helpers/filters'
 
 const HousesStyled = styled(FlexBox)``
 
 function Houses() {
-  const selected = useSelector((state) => state.select)
+  const {type, city} = useSelector((state) => state.houses.selectOption)
 
   const houses = useSelector((state) => state.houses.houses)
   const { byId } = houses
 
-  const initialStateHouses = useSelector((state) => state.houses)
-  const { isError, isLoading, isSuccess } = initialStateHouses
+  const { isError, isLoading, isSuccess } = useSelector((state) => state.houses)
 
-  const page = useSelector((state) => state.pagination)
-  const {currentPage} = page
+  const {currentPage} = useSelector((state) => state.houses.pagination)
 
   const dispatch = useDispatch()
 
@@ -27,19 +25,20 @@ function Houses() {
     dispatch(getHouses(currentPage))
   }, [dispatch, currentPage])
 
+  const filterHouses = () => {
+    const resultByType = filterByType((Object.values(byId)), type)
+    const resultByCity = filterByCity(resultByType, city)
+
+    return resultByCity
+  }
+
   return (
     <HousesStyled>
       {isLoading && <div>Loading...</div>}
       {isError && <div>Error</div>}
       {isSuccess && (
         <Grid gridGap="32px">
-          {Object.values(byId)
-            .filter(
-              (product) =>
-                (!selected.type || product.type === selected.type) &&
-                (!selected.city || product.city === selected.city),
-            )
-            .map((element) => (
+          {filterHouses().map((element) => (
               <HouseCard
                 key={`house-${element.id}`}
                 title={element.title}
