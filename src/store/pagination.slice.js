@@ -1,19 +1,20 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = {
   currentPage: 1,
   itemsPerPage: 9,
-};
+}
 
+// Metelo en houses.slice.js
 const paginationSlice = createSlice({
   name: 'pagination',
   initialState,
   reducers: {
     setCurrentPage: (state, action) => {
-      state.currentPage = action.payload;
+      state.currentPage = action.payload
     },
   },
-});
+})
 
-export const { setCurrentPage } = paginationSlice.actions;
-export default paginationSlice.reducer;
+export const { setCurrentPage } = paginationSlice.actions
+export default paginationSlice.reducer

@@ -5,6 +5,9 @@ const initialState = {
   city: '',
 }
 
+// metelo en houses.slice.js
+// No vas a poder reutilizarlo con otro tipo, por ejemplo si el directorio luego tiene oficinas, no podrías usar
+// la misma paginación porque interferia una con otra
 const selectSlice = createSlice({
   name: 'select',
   initialState,

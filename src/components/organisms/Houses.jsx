@@ -1,4 +1,4 @@
-import React, { useEffect} from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import { useSelector, useDispatch } from 'react-redux'
 import { getHouses } from '../../store/houses.slice'
@@ -10,16 +10,18 @@ import { setCurrentPage } from '../../store/pagination.slice'
 const HousesStyled = styled(FlexBox)``
 
 function Houses() {
+  // const {type, city } = ... -> deestructura aquí
   const selected = useSelector((state) => state.select)
 
   const houses = useSelector((state) => state.houses.houses)
   const { byId } = houses
 
+  // const { isError, isLoading, isSuccess } = useSelector((state) => state.houses)
   const initialStateHouses = useSelector((state) => state.houses)
   const { isError, isLoading, isSuccess } = initialStateHouses
 
   const page = useSelector((state) => state.pagination)
-  const {currentPage} = page
+  const { currentPage } = page
 
   const dispatch = useDispatch()
 
@@ -34,6 +36,8 @@ function Houses() {
       {isSuccess && (
         <Grid gridGap="32px">
           {Object.values(byId)
+            // Crea una función filterHouses, que llame a una función de filterByType y filterByCity, en helpers.
+            // Entonces aquí solo llamarías a filterHouses
             .filter(
               (product) =>
                 (!selected.type || product.type === selected.type) &&
@@ -51,7 +55,12 @@ function Houses() {
         </Grid>
       )}
       <FlexBox align="center">
-        <Button style={{ marginTop: '2rem' }} onClick={() => {dispatch(setCurrentPage(currentPage + 1))}}>
+        <Button
+          style={{ marginTop: '2rem' }}
+          onClick={() => {
+            dispatch(setCurrentPage(currentPage + 1))
+          }}
+        >
           Load more
         </Button>
       </FlexBox>
